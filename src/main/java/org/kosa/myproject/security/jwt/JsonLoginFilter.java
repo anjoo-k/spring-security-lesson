@@ -81,7 +81,7 @@ public class JsonLoginFilter extends UsernamePasswordAuthenticationFilter {
                 );
             
             // 인증 시도
-            // AuthenticationManager에 인증 위임
+            // AuthenticationManager에 인증 위임 : authenticationManager.authenticate()가 아래 다 실행
             // 내부적으로 다음 과정 실행:
             // - AuthenticationProvider 호출
             // - CustomMemberDetailsService.loadUserByUsername() 호출

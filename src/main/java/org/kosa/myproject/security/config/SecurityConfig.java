@@ -79,15 +79,21 @@ public class SecurityConfig {
         http.formLogin(auth -> auth.disable());
         http.httpBasic(auth -> auth.disable());
 
-
+        ///////////////////////////인증 인가에 대한 설정(개발자가 주로 확인)//////////////////////////////////
         http.authorizeHttpRequests(auth -> auth
                 // 로그인 허용
                 .requestMatchers("/api/auth/login").permitAll()
                 // POST 방식 회원가입은 인증없이 허용
                 .requestMatchers(HttpMethod.POST, "/api/members").permitAll()
-
+                // 관리자 모드는 인증과 ROLE_ADMIN 권한이 필요
+                // ROLE_은 자동 삽입으로 생략
+                .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
+                // GET 방식, 전체 게시글 조회는 인증 없이 접근을 모두 허용
+                // 참고  /api/products : 이 경로만 허용, /api/products/** : 경로에 대한 접근을 모두 허용
+                .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                 // 나머지 모든 요청은 인증 필요
                 .anyRequest().authenticated());
 
@@ -101,7 +107,7 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // JWTFilter를 LoginFilter 이전에 추가합니다.
-        // 이 필터가 먼저 실행되어 요청 헤더의 JWT 토큰을 검증하고 인증 정보를 설정합니다.
+        // 이 필터가 먼저 실행되어 요청 헤더의 JWT 토큰을 검증하고 인증 정보를 설정합니다. : 앞에서 토크을 확인하고, LoginFilter 실행
         http.addFilterBefore(new JwtFilter(jwtUtil), JsonLoginFilter.class);
 
         // Spring Security의 UsernamePasswordAuthenticationFilter 자리에 커스텀 JsonLoginFilter 추가합니다.
