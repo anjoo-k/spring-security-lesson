@@ -56,7 +56,7 @@ public class PostController {
       Spring Security 인증 흐름
       1) JWT 토큰 검증
       2) SecurityContext 에 인증 정보 저장
-      3) SecurityContext 에서 인증 정보 추출
+      3) SecurityContext 에서 인증 정보 추출sd
       4) 작성자 정보와 함께 게시글 저장
      */
     @PostMapping
@@ -69,7 +69,22 @@ public class PostController {
         // 작성자 정보 포함
         PostDetailResponseDto postDetailResponseDto = postService.createPost(requestDto, username);
         // ApiResponseDto의 표준화된 형식으로 응답한다.
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(postDetailResponseDto, "게시글 쓰기"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(postDetailResponseDto, "게시글 쓰기 성공"));
+    }
+
+    /**
+     * 게시글 상세 조회
+     * JWT 토큰 인증 필요 (로그인한 사용자만 작성 가능)
+     * GET  http://localhost:8080/api/posts/1
+     *
+     * @param id 조회할 게시글 ID
+     * @return 게시글 상세 정보
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPostById(@PathVariable Long id){
+        PostDetailResponseDto post = postService.getPostById(id);
+        log.info("게시글 조회 성공:title={}", post.getTitle());
+        return ResponseEntity.ok(ApiResponseDto.success(post, "게시글 조회 성공"));
     }
 
 }
