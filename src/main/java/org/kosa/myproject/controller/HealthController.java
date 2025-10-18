@@ -8,7 +8,7 @@ public class HealthController {
 
     @GetMapping("/api/health")
     public String health() {
-        return "OK!!!";
+        return "OK 성공성공성공";
     }
 }
 /*******************Security 설정에서 꼭 추가하세요***************************/
